@@ -13,7 +13,7 @@
     die("empty message");
   }
 
-  $result = $conn->query("SELECT * FROM User WHERE id = '" . $user_id . "' AND password='" . $p_sha256 . "';");
+  $result = $conn->query("SELECT * FROM Users WHERE id = '" . $user_id . "' AND password='" . $p_sha256 . "';");
   if($result->num_rows == 0) {
     die("invalid user");
   }

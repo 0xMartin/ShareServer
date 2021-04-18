@@ -153,7 +153,7 @@
               }
 
               $password = hash('sha256', $password);
-              if($conn->query("INSERT INTO Users (id, name, password, last_load_time) VALUES ('".$user_id."', '".$name."', '".$password."', '0000-00-00 00:00:00.000');")) {
+              if($conn->query("INSERT INTO Users (id, name, password, last_load_time) VALUES ('".$user_id."', '".$name."', '".$password."', '2000-01-01 00:00:00.000');")) {
                 echo '<div class="alert alert-success" role="alert">';
                 echo 'User successfully created';
                 echo '</div>';

@@ -14,11 +14,11 @@
   //check user
   //############################################################################
 
-  $result = $conn->query("SELECT * FROM User WHERE id = '" . $user_id . "' AND password='" . $p_sha256 . "';");
+  $result = $conn->query("SELECT * FROM Users WHERE id = '" . $user_id . "' AND password='" . $p_sha256 . "';");
   if($result->num_rows == 0) {
     die('invalid user');
   } else {
-    $conn->query("UPDATE User SET last_load_time='" . $time . "' WHERE id = '" . $user_id . "';");
+    $conn->query("UPDATE Users SET last_load_time='" . $time . "' WHERE id = '" . $user_id . "';");
   }
 
 
@@ -32,7 +32,7 @@
 
   //names of online users
   $out .='"online":[';
-  $online_names = $conn->query("SELECT * FROM User WHERE TIMEDIFF('".$time."', last_load_time) < '00:00:30.000'");
+  $online_names = $conn->query("SELECT * FROM Users WHERE TIMEDIFF('".$time."', last_load_time) < '00:00:30.000'");
   $index = 0;
   while($row = $online_names->fetch_assoc()) {
     $out .='{"name":"' . $row["name"] . '",';
@@ -64,7 +64,7 @@
     $out .='"msg":[';
     $index = 0;
     while($row = $result->fetch_assoc()) {
-      $sr = $conn->query("SELECT name FROM User WHERE id='" . $row["user_id"] . "';");
+      $sr = $conn->query("SELECT name FROM Users WHERE id='" . $row["user_id"] . "';");
       $name = $sr->fetch_assoc();
       $out .='{';
       $out .='"user_id":"' . $row["user_id"] . '",';
