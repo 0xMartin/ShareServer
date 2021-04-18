@@ -44,7 +44,7 @@
           include 'config.php';
           include 'driver/db_connect.php';
           $id = $_GET['id'];
-          $result = $conn->query("SELECT * FROM User WHERE id = '".$id."';");
+          $result = $conn->query("SELECT * FROM Users WHERE id = '".$id."';");
           if($result->num_rows == 0) {
             echo '<button type="button" id="back" class="btn btn-dark border border-secondary">';
             echo '<i class="fas fa-long-arrow-alt-left pr-2"></i>';

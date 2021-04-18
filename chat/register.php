@@ -141,7 +141,7 @@
               $cnt = 0;
               do {
                 $user_id = uniqid();
-                $result = $conn->query("SELECT * FROM User WHERE id = '".$user_id."';");
+                $result = $conn->query("SELECT * FROM Users WHERE id = '".$user_id."';");
                 $cnt = $cnt + 1;
               } while($result->num_rows > 0 && $cnt < 5000);
 
@@ -153,7 +153,7 @@
               }
 
               $password = hash('sha256', $password);
-              if($conn->query("INSERT INTO User (id, name, password, last_load_time) VALUES ('".$user_id."', '".$name."', '".$password."', '0000-00-00 00:00:00.000');")) {
+              if($conn->query("INSERT INTO Users (id, name, password, last_load_time) VALUES ('".$user_id."', '".$name."', '".$password."', '0000-00-00 00:00:00.000');")) {
                 echo '<div class="alert alert-success" role="alert">';
                 echo 'User successfully created';
                 echo '</div>';

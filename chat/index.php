@@ -99,7 +99,7 @@
               $password = $_POST['password'];
               $password = hash('sha256', $password);
 
-              $result = $conn->query("SELECT * FROM User WHERE name = '" . $name . "' AND password='" . $password . "';");
+              $result = $conn->query("SELECT * FROM Users WHERE name = '" . $name . "' AND password='" . $password . "';");
               if($result->num_rows == 0) {
                 echo '<div class="alert alert-danger" role="alert">';
                 echo 'Wrong username or password';
