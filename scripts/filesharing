@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+
+location=/var/www/html/file/files
+confFile=/var/www/html/file/conf.cg
+
+if [ $# == 0 ];
+then
+	echo "Wrong option, try -h"
+	exit 1
+fi
+
+# help
+if [ $1 == "-h" ];
+then
+	echo "File Sharing control @ Martin Krcma"
+	echo "Usage: filesharing [option] [offset]"
+	echo " "
+	echo "Data manipulation:"
+	echo "-l		Show directory with latest date"
+	echo "-f [offset]	Show all files of directory"
+	echo "-m [offset]	Move directory with latest date from file server to current location [$(pwd)]"
+	echo "-D [offset]	Delete Directory from file server"
+	echo "Sharing control:"
+	echo "-e		Enable file uploading"
+	echo "-d		Disable file uploading"
+	echo "-ed		Enable downloading from server"
+	echo "-dd		Disable downloading from server"
+	echo "-s		Show file server status"
+	exit 0
+fi
+
+offset=$(expr $(if [ $# == 1 ]; then echo 0; else echo $2; fi) + 1)
+
+name=$(ls -t $location | head -$offset | tail -1)
+
+# show lastest directory
+if [ $1 == "-l" ];
+then
+	echo "Latest directory: $name"
+	exit 0
+fi
+
+# must run as root
+if [[ $(id -u) -ne 0 ]];
+then
+	echo "Please run as root"
+	exit 1
+fi
+
+# enable file uploading
+if [ $1 == "-e" ];
+then
+	chmod +w $location
+        echo "ENABLED=True" > $confFile
+        echo "File uploading enabled"
+	exit 0
+fi
+
+# disable file uploading
+if [ $1 == "-d" ];
+then
+	chmod -w $location
+        echo "ENABLED=False" > $confFile
+        echo "File uploading disabled"
+	exit 0
+fi
+
+if [ $1 == "-s" ];
+then
+	echo "Server $(systemctl status apache2)"
+	echo ">> Donwloading: $(if [ -r $location ]; then echo "True"; else echo "False"; fi)"
+	echo ">> Uploading: $(cut -d "=" $confFile -f2)"
+	echo ">> Total size: $(du -sh $location)"
+	echo ">> Days: $(ls $location | wc -l)"
+	echo ">> Uploads: $(ls -R $location | wc -l)"
+fi
+
+# show files
+if [ $1 == "-f" ];
+then
+	echo "Files in [$name]:"
+        echo "$(ls $location/$name)"
+        exit 0
+fi
+
+# move direcotory to current location
+if [ $1 == "-m" ];
+then
+	echo Loading directory with name: $name
+	cp -R $location/$name .
+	owner=$(stat -c "%U" .)
+	chown -R $owner:$owner $name
+fi
+
+# delete directory from file server
+if [ $1 == "-D" ];
+then
+	echo "Delete directory [$name] from file server? [y,N]"
+	read opt
+	if [ -z $opt];
+	then
+		exit 0
+	fi
+	if [ $opt == "y" ] || [ $opt == "Y" ];
+	then
+		rm -r $location/$name
+		echo "Direcore deleted from server"
+	fi
+	exit 0
+fi
+
+# enable downlading
+if [ $1 == "-ed" ];
+then
+	chmod +r $location
+	echo "Downloading enabled"
+	exit 0
+fi
+
+# disable downloading
+if [ $1 == "-dd" ];
+then
+        chmod -r $location
+        echo "Downloading disabled"
+	exit 0
+fi
+
+# exit
+exit 0
