@@ -7,6 +7,12 @@
 
   $time = getTime();
 
+  $result = $conn->query("SELECT * FROM Users WHERE id = '" . $user_id . "' AND password='" . $p_sha256 . "';");
+  if($result->num_rows == 0) {
+    die('invalid user');
+  } else {
+    $conn->query("UPDATE Users SET last_load_time='" . $time . "', active_chat_id='-1' WHERE id = '" . $user_id . "';");
+  }
 
   //chats
   $out ='{';
