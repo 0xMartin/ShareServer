@@ -73,7 +73,7 @@
 
   //load msg from db
   if($last_update_time == "require_update") {
-    $result = $conn->query("SELECT * FROM Chat;");
+    $result = $conn->query("SELECT * FROM Chat" . $chat_id . ";");
   } else {
     $result = $conn->query("SELECT * FROM Chat" . $chat_id . " WHERE msg_time > '" . $last_update_time . "';");
   }
