@@ -57,6 +57,11 @@
         <?php
           include 'driver/user_check.php';
 
+          if($_GET['chat'] == '0') {
+            header("Location: chat.php?id=".$_GET['id']."&chat=".$_GET['chat']);   
+            exit();
+          }
+
           echo "<input id='chat_id' value='" . $_GET['chat'] . "' hidden></input>";
         ?>
 
@@ -129,7 +134,7 @@
                 return;
               }
 
-              header("Location: chat_selector.php?id=".$_GET['id']);
+              header("Location: chat_selector.php?id=".$_GET['id']."&chat=".$_GET['chat']);
             }
           ?>
         </div>
