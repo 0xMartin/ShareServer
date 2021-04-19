@@ -126,6 +126,14 @@
               //get new chat id
               $chat_id = $_GET['chat'];
 
+	      //check if this user is not in this chat
+              if($conn->query("SELECT * FROM ChatList WHERE chat_id='" . $chat_id . "' AND user_id='" . $user_id . "';")->num_rows != 0) {
+                echo '<div class="alert alert-danger" role="alert">';
+                echo 'User is already in this chat';
+                echo '</div>';
+                return;
+              }
+
               //create chat group
               if(!$conn->query("INSERT INTO ChatList (chat_id, user_id) VALUES ('".$chat_id."', '".$user_id."');")) {
                 echo '<div class="alert alert-danger" role="alert">';
