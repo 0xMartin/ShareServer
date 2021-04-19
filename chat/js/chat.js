@@ -14,13 +14,16 @@ const imgs_dir = "imgs";
 const message = document.querySelector("#message");
 const send = document.querySelector("#send");
 const msg_body = document.querySelector("#msg_body");
-const logout_btn = document.querySelector("#logout_btn");
+const back_btn = document.querySelector("#back");
+const add_btn = document.querySelector("#add");
 const today_msg_count = document.querySelector("#today_msg_count");
 const online_users = document.querySelector("#online_users");
+const chat_name = document.querySelector("#chat_name");
 
 //user id and password sha256 (hidden)
 const user_id = document.querySelector("#user_id");
 const p_sha256 = document.querySelector("#p_sha256");
+const chat_id = document.querySelector("#chat_id");
 
 //img input
 const img = document.querySelector("#img");
@@ -37,9 +40,12 @@ img.addEventListener("change", function() {
 });
 
 
-logout_btn.onclick = function() {
-  document.cookie = "password=''";
-  window.location.href = "index.php";
+back_btn.onclick = function() {
+  window.location.href = "chat_selector.php?id=" + user_id.value;
+};
+
+add_btn.onclick = function() {
+  window.location.href = "add_user.php?id=" + user_id.value + "&chat=" + chat_id.value;
 };
 
 //msg length limitation
@@ -118,7 +124,7 @@ function addMessage(user_id, name, msg, img_url, time) {
     "</div>" +
     "<div class='msg_cotainer'>" +
     msg +
-    (img_url != 'none' ? "<br><img src='./" + imgs_dir + "/" + img_url + ".jpeg' class='msg-img rounded'>" : "") +
+    (img_url != 'none' ? "<br><img src='./" + imgs_dir + "/chat" + chat_id.value + "/" + img_url + ".jpeg' class='msg-img rounded'>" : "") +
     "</div>" +
     "<span class='msg_info'><span class='mr-3'>" + name + "</span><span>" + time_str + "</span></span>" +
     "</div>"
@@ -132,7 +138,7 @@ function addMyMessage(msg, img_url, time) {
     "<div class='d-flex justify-content-end mb-4 position-relative'>" +
     "<div class='msg_cotainer_send'>" +
     msg +
-    (img_url != 'none' ? "<br><img src='./" + imgs_dir + "/" + img_url + ".jpeg' class='msg-img rounded'>" : "") +
+    (img_url != 'none' ? "<br><img src='./" + imgs_dir + "/chat" + chat_id.value + "/" + img_url + ".jpeg' class='msg-img rounded'>" : "") +
     "</div>" +
     "<span class='msg_info_send'>" + time_str + "</span>" +
     "</div>"
@@ -140,12 +146,12 @@ function addMyMessage(msg, img_url, time) {
 }
 
 var last_names = "";
-function refreshOnlineUsers(online) {
+function refreshOnlineUsers(users, online) {
   var data = "";
   var names = "";
   for (var i = 0; i < online.length && i < 10; ++i) {
     names +=  online[i].name + (i + 1 == online.length ? "" : ", ");
-    data += "<img src='./" + profile_imgs_dir + "/" + online[i].id + ".png' class='rounded-circle user_img_msg mr-1'>";
+    data += "<img src='./" + profile_imgs_dir + "/" + online[i].id + ".png' class='rounded-circle user_img_msg_small mr-1'>";
   }
 
   if(names == last_names) {
@@ -155,6 +161,15 @@ function refreshOnlineUsers(online) {
 
   online_users.innerHTML = data;
   online_users.title = names;
+
+  var name = "";
+  for (var i = 0; i < users.length && i < 5; ++i) {
+    name +=  users[i] + (i + 1 == users.length ? "" : ", ");
+  }
+  if(users.length > 5) {
+      name += " ...";
+  }
+  chat_name.innerHTML = name;
 }
 
 
@@ -178,6 +193,7 @@ send.onclick = function() {
       data: {
         user_id: user_id.value,
         p_sha256: p_sha256.value,
+        chat_id: chat_id.value,
         msg: message.value,
         img_base64: "none"
       }
@@ -199,12 +215,15 @@ send.onclick = function() {
         data: {
           user_id: user_id.value,
           p_sha256: p_sha256.value,
+          chat_id: chat_id.value,
           msg: message.value,
           img_base64: result_base64
         }
       }).done(function(resp) {
         if (resp == "success") {
           message.value = "";
+          img.value = "";
+          img_click.classList.remove("text-success");
           setCookie("password", p_sha256.value, 60);
         }
         console.log(resp);
@@ -229,10 +248,13 @@ function refresh() {
     data: {
       user_id: user_id.value,
       p_sha256: p_sha256.value,
+      chat_id: chat_id.value,
       last_update_time: last_time
     }
   }).done(function(resp) {
-    if(resp == "invalid user"){
+    if(resp == "chat group not exists for this user"){
+      window.location.href = "chat_selector.php?id=" + user_id.value;
+    } else if(resp == "invalid user"){
       //invalid user -> return back to login page
       document.cookie = "password=''";
       window.location.href = "index.php";
@@ -265,14 +287,14 @@ function refresh() {
         //scroll down
         if(img) {
           setTimeout(() => {
-              msg_body.scrollTop = msg_body.scrollHeight;
+            msg_body.scrollTop = msg_body.scrollHeight;
           }, 500);
         } else {
             msg_body.scrollTop = msg_body.scrollHeight;
         }
       }
       //online user
-      refreshOnlineUsers(data.online);
+      refreshOnlineUsers(data.users, data.online);
     }
   });
   setTimeout(refresh, response);

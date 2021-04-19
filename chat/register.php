@@ -59,7 +59,7 @@
           <i class="fas fa-registered pr-3"></i>
           <span>REGISTER</span>
         </h2>
-        <div class="border border-secondary rounded p-2">
+        <div class="p-2">
           <form method="post" enctype="multipart/form-data">
             <div class="form-group">
               <label class="form-label" for="name">User name:</label>
@@ -153,7 +153,7 @@
               }
 
               $password = hash('sha256', $password);
-              if($conn->query("INSERT INTO Users (id, name, password, last_load_time) VALUES ('".$user_id."', '".$name."', '".$password."', '2000-01-01 00:00:00.000');")) {
+              if($conn->query("INSERT INTO Users (id, name, password, last_load_time, active_chat_id) VALUES ('".$user_id."', '".$name."', '".$password."', '2000-01-01 00:00:00.000', '0');")) {
                 echo '<div class="alert alert-success" role="alert">';
                 echo 'User successfully created';
                 echo '</div>';
@@ -177,8 +177,15 @@
                 echo '</div>';
               }
 
+              if(!$conn->query("INSERT INTO ChatList (chat_id, user_id) VALUES ('0', '".$user_id."');")) {
+                echo '<div class="alert alert-danger" role="alert">';
+                echo 'Failed to add to public chat';
+                echo '</div>';
+                return;
+              }
+
               setcookie("password", $password, time() + 3600);
-              header("Location: chat.php?id=" . $user_id);
+              header("Location: chat_selector.php?id=" . $user_id);
             }
           ?>
         </div>

@@ -14,9 +14,11 @@
 }
 
 .contacts_body {
-  padding: 0.75rem 0 !important;
+  padding: 0 0 !important;
+  height: 90vh;
   overflow-y: auto;
   white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .msg_card_body {
@@ -113,6 +115,12 @@
   border: 1.5px solid #f5f6fa;
 }
 
+.user_img_msg_small {
+  height: 25px;
+  width: 25px;
+  border: 1px solid #f5f6fa;
+}
+
 .img_cont {
   position: relative;
   height: 70px;
@@ -155,12 +163,12 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.video_cam {
+.tools {
   margin-left: 50px;
   margin-top: 5px;
 }
 
-.video_cam span {
+.tools span {
   color: white;
   font-size: 20px;
   cursor: pointer;
@@ -209,6 +217,18 @@
 
 .msg_head {
   position: relative;
+}
+
+#opt {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: white;
+  font-size: 20px;
+}
+
+#back, #add {
+  cursor: pointer;
 }
 
 #logout_btn {

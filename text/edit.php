@@ -48,7 +48,25 @@
                       $path = $files_dir.'/'.$_GET["file"];
                         if (isset($_POST["content"])) {
                         $file = fopen($path, "w") or die("Unable to open file!");
-                        fwrite($file, $_POST['content']);
+
+                        //file lock system
+                        $count = 0;
+                        $timeout_secs = 5; //number of seconds of timeout
+                        $got_lock = true;
+                        while (!flock($file, LOCK_EX | LOCK_NB, $wouldblock)) {
+                            if ($wouldblock && $count++ < $timeout_secs) {
+                                sleep(1);
+                            } else {
+                                $got_lock = false;
+                                break;
+                            }
+                        }
+                        if ($got_lock) {
+                          fwrite($file, $_POST['content']);
+                          fflush($file);
+                          flock($file, LOCK_UN);
+                        }
+
                         fclose($file);
                       }
                     }
@@ -62,7 +80,7 @@
                     if(file_exists($path) && strlen($_GET["file"]) != 0) {
                       $file = fopen($path, "r") or die("Unable to open file!");
                       echo '<textarea class="form-control txt" id="content" name="content" rows="16">';
-                      echo fread($file, filesize($path));
+                      echo stream_get_contents($file);
                       fclose($file);
                       echo '</textarea>';
                       $create = false;

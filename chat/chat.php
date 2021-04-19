@@ -40,41 +40,42 @@
     <div class="container h-100">
 
       <!--Content-->
-        <?php
-          include 'config.php';
-          include 'driver/db_connect.php';
-          $id = $_GET['id'];
-          $result = $conn->query("SELECT * FROM Users WHERE id = '".$id."';");
-          if($result->num_rows == 0) {
-            echo '<button type="button" id="back" class="btn btn-dark border border-secondary">';
-            echo '<i class="fas fa-long-arrow-alt-left pr-2"></i>';
-            echo '<span>BACK</span>';
-            echo '</button>';
-            echo '<script src="./js/back_btn.js"></script>';
-            die("<span class='pl-5'>Invalid user ID</span>");
-          }
+      <?php
+        include 'driver/user_check.php';
 
-          echo "<input id='user_id' value='" . $id . "' hidden></input>";
-          echo "<input id='p_sha256' value='" . $_COOKIE['password'] . "' hidden></input>";
-        ?>
+        echo "<input id='chat_id' value='" . $_GET['chat'] . "' hidden></input>";
+      ?>
 
         <div class="border border-secondary rounded p-2 mt-5">
+
   				<div class="card">
   					<div class="card-header msg_head">
   						<div class="d-flex bd-highlight">
   							<div class="img_cont">
-  								<img src="./profile/default.png" class="rounded-circle user_img">
+                  <?php
+                    if($_GET['chat'] == '0') {
+                      echo '<img src="./profile/default.png" class="rounded-circle user_img">';
+                    } else {
+                      include 'driver/db_connect.php';
+                      $users = $conn->query("SELECT Users.id, Users.name FROM ChatList LEFT JOIN Users on Users.id=ChatList.user_id WHERE ChatList.user_id!='" . $_GET['id'] . "' AND ChatList.chat_id='" . $_GET['chat'] . "';");
+                      if($user = $users->fetch_assoc()) {
+                        echo '<img src="./profile/' . $user['id'] . '.png" class="rounded-circle user_img">';
+                      }
+                    }
+                  ?>
   								<span class="online_icon"></span>
   							</div>
   							<div class="user_info">
-  								<span>Public chat</span>
+  								<span id="chat_name"></span>
   								<p><a id="today_msg_count">0</a> Messages today</p>
   							</div>
                 <div class="user_info">
   								<span id="online_users" data-toggle="tooltip" data-placement="bottom" title=""></span>
   							</div>
-                <span id="logout_btn" data-toggle="tooltip" data-placement="bottom" title="Log out">
-                    <i class="fas fa-sign-out-alt"></i>
+                <span id="opt">
+                    <i id="back" class="fas fa-long-arrow-alt-left" data-toggle="tooltip" data-placement="bottom" title="Back"></i>
+                    <br>
+                    <i id="add" class="fas fa-plus-square" data-toggle="tooltip" data-placement="bottom" title="Add user"></i>
                 </span>
   						</div>
   					</div>

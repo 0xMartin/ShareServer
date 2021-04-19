@@ -58,7 +58,7 @@
           <i class="far fa-comment pr-3"></i>
           <span>LOGIN</span>
         </h2>
-        <div class="border border-secondary rounded p-2">
+        <div class="p-2">
           <form method="post" enctype="multipart/form-data">
             <div class="form-group">
               <label class="form-label" for="name">User name:</label>
@@ -107,7 +107,7 @@
               } else {
                 $row = $result->fetch_assoc();
                 setcookie("password", $row['password'], time() + 3600);
-                header("Location: chat.php?id=" . $row['id']);
+                header("Location: chat_selector.php?id=" . $row['id']);
               }
             }
           ?>
