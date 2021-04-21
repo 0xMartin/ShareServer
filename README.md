@@ -11,7 +11,7 @@ This allows users to change the contents of a particular file on a shared storag
 
 <img src="./doc/text1.png" width="50%" height="50%"><img src="./doc/text2.png" width="50%" height="50%">
 
-## Draw sharing
+## Realtime drawing
 Allows multiple users to draw on one canvas at a time. There are only basic drawing tools (pen, fill). It can create any amount of canvas on disk.
 
 ![draw sharing](./doc/draw.gif)
