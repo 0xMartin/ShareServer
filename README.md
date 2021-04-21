@@ -1,5 +1,5 @@
 # Share Server
-Share Server is a web application written mainly in php and javascript. It uses AJAX on the client side to communicate with the server. This application is designed to share information and this is possible in several ways. You can save any files to a shared storage, edit a text file shared between users, draw on a canvas in real time with other users, or write to other users simply by chat. The application requires a mysql database for its operation.
+Share Server is a web application written mainly in php and javascript. It uses AJAX on the client side to communicate with the server. This application is designed to share information and this is possible in several ways. You can save any files to a shared storage, edit a text file shared between users, drawing on a canvas in real time with other users, or write to other users in simple chat app. The application requires a mysql database for its operation.
 
 ## File sharing
 It is possible to upload any files to a shared storage. Any user can download these files. It is possible to rename and delete files that are on the storage. The newly uploaded file is included in the automatically generated folder with the current date or in the current folder in which the user is located (depending on the user's choice). It is also possible to create your own directories.
